@@ -1,0 +1,152 @@
+namespace Philiprehberger.Money;
+
+/// <summary>
+/// Represents an ISO 4217 currency.
+/// </summary>
+public readonly record struct Currency(string Code, string Symbol, int DecimalPlaces)
+{
+    public override string ToString() => Code;
+}
+
+/// <summary>
+/// Well-known ISO 4217 currency constants.
+/// </summary>
+public static class Currencies
+{
+    public static Currency USD { get; } = new("USD", "$", 2);
+    public static Currency EUR { get; } = new("EUR", "€", 2);
+    public static Currency GBP { get; } = new("GBP", "£", 2);
+    public static Currency JPY { get; } = new("JPY", "¥", 0);
+    public static Currency CHF { get; } = new("CHF", "CHF", 2);
+    public static Currency CAD { get; } = new("CAD", "$", 2);
+    public static Currency AUD { get; } = new("AUD", "$", 2);
+    public static Currency SEK { get; } = new("SEK", "kr", 2);
+    public static Currency NOK { get; } = new("NOK", "kr", 2);
+    public static Currency DKK { get; } = new("DKK", "kr", 2);
+}
+
+/// <summary>
+/// An immutable monetary value stored as an integer number of minor units
+/// (e.g. cents for USD) to avoid floating-point rounding errors.
+/// </summary>
+public readonly record struct Money : IComparable<Money>
+{
+    /// <summary>Amount expressed in the currency's smallest unit (e.g. cents).</summary>
+    public long AmountInMinorUnits { get; }
+
+    /// <summary>The currency this amount is denominated in.</summary>
+    public Currency Currency { get; }
+
+    private Money(long amountInMinorUnits, Currency currency)
+    {
+        AmountInMinorUnits = amountInMinorUnits;
+        Currency = currency;
+    }
+
+    /// <summary>
+    /// Creates a <see cref="Money"/> from a decimal amount.
+    /// The value is rounded to the currency's decimal places using banker's rounding.
+    /// </summary>
+    public static Money Of(decimal amount, Currency currency)
+    {
+        var factor = (long)Math.Pow(10, currency.DecimalPlaces);
+        var minor = (long)Math.Round(amount * factor, MidpointRounding.ToEven);
+        return new Money(minor, currency);
+    }
+
+    /// <summary>Adds two money values. Throws if currencies differ.</summary>
+    public Money Add(Money other)
+    {
+        EnsureSameCurrency(other);
+        return new Money(AmountInMinorUnits + other.AmountInMinorUnits, Currency);
+    }
+
+    /// <summary>Subtracts <paramref name="other"/> from this value. Throws if currencies differ.</summary>
+    public Money Subtract(Money other)
+    {
+        EnsureSameCurrency(other);
+        return new Money(AmountInMinorUnits - other.AmountInMinorUnits, Currency);
+    }
+
+    /// <summary>Multiplies this value by a scalar factor.</summary>
+    public Money Multiply(decimal factor)
+    {
+        var result = (long)Math.Round(AmountInMinorUnits * factor, MidpointRounding.ToEven);
+        return new Money(result, Currency);
+    }
+
+    /// <summary>Returns the arithmetic negation of this value.</summary>
+    public Money Negate() => new(-AmountInMinorUnits, Currency);
+
+    /// <summary>Returns the absolute value.</summary>
+    public Money Abs() => new(Math.Abs(AmountInMinorUnits), Currency);
+
+    /// <summary>
+    /// Distributes this amount across <paramref name="ratios"/> proportionally,
+    /// ensuring that remainder cents are distributed one at a time to the first shares.
+    /// </summary>
+    public Money[] Allocate(params int[] ratios)
+    {
+        if (ratios == null || ratios.Length == 0)
+            throw new ArgumentException("At least one ratio must be provided.", nameof(ratios));
+
+        long total = ratios.Sum();
+        if (total == 0)
+            throw new ArgumentException("Ratios must sum to a non-zero value.", nameof(ratios));
+
+        var results = new long[ratios.Length];
+        long remainder = AmountInMinorUnits;
+
+        for (int i = 0; i < ratios.Length; i++)
+        {
+            results[i] = AmountInMinorUnits * ratios[i] / total;
+            remainder -= results[i];
+        }
+
+        // Distribute leftover minor units to the first shares
+        for (int i = 0; i < remainder; i++)
+            results[i]++;
+
+        var currency = Currency;
+        return results.Select(a => new Money(a, currency)).ToArray();
+    }
+
+    /// <summary>Converts back to a <see cref="decimal"/> amount.</summary>
+    public decimal ToDecimal()
+    {
+        var factor = (decimal)Math.Pow(10, Currency.DecimalPlaces);
+        return AmountInMinorUnits / factor;
+    }
+
+    /// <summary>Formats the amount with the currency symbol (e.g. <c>$12.99</c>).</summary>
+    public string Format()
+    {
+        var amount = ToDecimal();
+        var formatted = amount.ToString($"F{Currency.DecimalPlaces}");
+        return $"{Currency.Symbol}{formatted}";
+    }
+
+    /// <inheritdoc/>
+    public int CompareTo(Money other)
+    {
+        EnsureSameCurrency(other);
+        return AmountInMinorUnits.CompareTo(other.AmountInMinorUnits);
+    }
+
+    public override string ToString() => Format();
+
+    private void EnsureSameCurrency(Money other)
+    {
+        if (Currency.Code != other.Currency.Code)
+            throw new InvalidOperationException(
+                $"Cannot operate on different currencies: {Currency.Code} and {other.Currency.Code}");
+    }
+
+    public static Money operator +(Money a, Money b) => a.Add(b);
+    public static Money operator -(Money a, Money b) => a.Subtract(b);
+    public static Money operator *(Money a, decimal b) => a.Multiply(b);
+    public static bool operator >(Money a, Money b) => a.CompareTo(b) > 0;
+    public static bool operator <(Money a, Money b) => a.CompareTo(b) < 0;
+    public static bool operator >=(Money a, Money b) => a.CompareTo(b) >= 0;
+    public static bool operator <=(Money a, Money b) => a.CompareTo(b) <= 0;
+}

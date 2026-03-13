@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0] - 2026-03-12
+
+### Added
+- `Parse` and `TryParse` methods for creating Money from formatted strings
+- `Convert` method for currency conversion with explicit exchange rates
+- `Divide` method for splitting money into equal parts with remainder distribution
+
 ## 0.1.1 (2026-03-10)
 
 - Fix README path in csproj so README displays on nuget.org

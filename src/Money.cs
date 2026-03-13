@@ -23,6 +23,12 @@ public static class Currencies
     public static Currency SEK { get; } = new("SEK", "kr", 2);
     public static Currency NOK { get; } = new("NOK", "kr", 2);
     public static Currency DKK { get; } = new("DKK", "kr", 2);
+
+    /// <summary>All pre-defined currencies for lookup.</summary>
+    internal static readonly Currency[] All =
+    [
+        USD, EUR, GBP, JPY, CHF, CAD, AUD, SEK, NOK, DKK
+    ];
 }
 
 /// <summary>
@@ -109,6 +115,116 @@ public readonly record struct Money : IComparable<Money>
 
         var currency = Currency;
         return results.Select(a => new Money(a, currency)).ToArray();
+    }
+
+    /// <summary>
+    /// Converts this money to another currency using the given exchange rate.
+    /// The rate represents how many units of the target currency equal one unit of the source currency.
+    /// </summary>
+    public Money Convert(Currency target, decimal rate)
+    {
+        if (rate <= 0)
+            throw new ArgumentException("Exchange rate must be positive.", nameof(rate));
+
+        var sourceAmount = ToDecimal();
+        return Of(sourceAmount * rate, target);
+    }
+
+    /// <summary>
+    /// Splits this amount into <paramref name="parts"/> equal shares.
+    /// Remainder minor units are distributed one at a time to the first shares.
+    /// </summary>
+    public Money[] Divide(int parts)
+    {
+        if (parts <= 0)
+            throw new ArgumentException("Number of parts must be greater than zero.", nameof(parts));
+
+        long baseAmount = AmountInMinorUnits / parts;
+        long remainder = AmountInMinorUnits % parts;
+
+        var results = new Money[parts];
+        for (int i = 0; i < parts; i++)
+            results[i] = new Money(baseAmount + (i < remainder ? 1 : 0), Currency);
+
+        return results;
+    }
+
+    /// <summary>
+    /// Parses a formatted money string such as "$12.99", "EUR 100.50", or "42.00 USD".
+    /// Matches against pre-defined currencies by symbol and code.
+    /// </summary>
+    public static Money Parse(string input)
+    {
+        if (!TryParse(input, out var result))
+            throw new FormatException($"Cannot parse '{input}' as a Money value.");
+        return result;
+    }
+
+    /// <summary>
+    /// Attempts to parse a formatted money string. Returns true on success.
+    /// </summary>
+    public static bool TryParse(string input, out Money result)
+    {
+        result = default;
+
+        if (string.IsNullOrWhiteSpace(input))
+            return false;
+
+        var trimmed = input.Trim();
+
+        // Try each currency by code and symbol
+        foreach (var currency in Currencies.All)
+        {
+            // Try code-first: "USD 12.99" or "USD12.99"
+            if (TryMatchPrefix(trimmed, currency.Code, currency, out result))
+                return true;
+
+            // Try code-last: "12.99 USD" or "12.99USD"
+            if (TryMatchSuffix(trimmed, currency.Code, currency, out result))
+                return true;
+
+            // Try symbol-first: "$12.99" or "$ 12.99"
+            if (currency.Symbol != currency.Code && TryMatchPrefix(trimmed, currency.Symbol, currency, out result))
+                return true;
+
+            // Try symbol-last: "12.99$" or "12.99 $"
+            if (currency.Symbol != currency.Code && TryMatchSuffix(trimmed, currency.Symbol, currency, out result))
+                return true;
+        }
+
+        return false;
+    }
+
+    private static bool TryMatchPrefix(string input, string prefix, Currency currency, out Money result)
+    {
+        result = default;
+        if (!input.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        var remainder = input[prefix.Length..].Trim();
+        if (decimal.TryParse(remainder, System.Globalization.NumberStyles.Number,
+                System.Globalization.CultureInfo.InvariantCulture, out var amount))
+        {
+            result = Of(amount, currency);
+            return true;
+        }
+        return false;
+    }
+
+    private static bool TryMatchSuffix(string input, string suffix, Currency currency, out Money result)
+    {
+        result = default;
+        if (!input.EndsWith(suffix, StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        var remainder = input[..^suffix.Length].Trim();
+        if (decimal.TryParse(remainder, System.Globalization.NumberStyles.Number,
+                System.Globalization.CultureInfo.InvariantCulture, out var amount))
+        {
+            result = Of(amount, currency);
+            return true;
+        }
+        return false;
     }
 
     /// <summary>Converts back to a <see cref="decimal"/> amount.</summary>

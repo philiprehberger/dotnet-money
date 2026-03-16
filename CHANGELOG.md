@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.3
+
+- Add Development section to README
+- Add GenerateDocumentationFile and RepositoryType to .csproj
+
 ## [0.2.0] - 2026-03-12
 
 ### Added

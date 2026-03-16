@@ -84,6 +84,12 @@ var eur = usd.Convert(Currencies.EUR, 0.92m); // €92.00
 
 Pre-defined constants: `USD`, `EUR`, `GBP`, `JPY`, `CHF`, `CAD`, `AUD`, `SEK`, `NOK`, `DKK`.
 
+## Development
+
+```bash
+dotnet build src/Philiprehberger.Money.csproj --configuration Release
+```
+
 ## License
 
 MIT

@@ -1,5 +1,9 @@
 # Philiprehberger.Money
 
+[![CI](https://github.com/philiprehberger/dotnet-money/actions/workflows/ci.yml/badge.svg)](https://github.com/philiprehberger/dotnet-money/actions/workflows/ci.yml)
+[![NuGet](https://img.shields.io/nuget/v/Philiprehberger.Money.svg)](https://www.nuget.org/packages/Philiprehberger.Money)
+[![License](https://img.shields.io/github/license/philiprehberger/dotnet-money)](LICENSE)
+
 An immutable `Money` value type for .NET that stores amounts as integer minor units (cents, pence, etc.) to eliminate floating-point rounding errors. Includes ISO 4217 currency definitions and proportional allocation.
 
 ## Install

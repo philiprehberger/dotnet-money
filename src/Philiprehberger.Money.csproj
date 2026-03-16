@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>Philiprehberger.Money</PackageId>
-    <Version>0.2.0</Version>
+    <Version>0.2.1</Version>
     <Authors>Philip Rehberger</Authors>
     <Description>Immutable Money value object with integer arithmetic and ISO 4217 currencies</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

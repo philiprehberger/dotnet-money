@@ -1,21 +1,13 @@
 # Changelog
 
-## 0.1.5
+## 0.1.5 (2026-03-20)
 
-- Expand README with arithmetic, formatting, allocation, and comparison examples
-- Add LangVersion and TreatWarningsAsErrors to csproj
-
-## 0.2.3
-
+- Add `Parse` and `TryParse` methods for creating Money from formatted strings
+- Add `Convert` method for currency conversion with explicit exchange rates
+- Add `Divide` method for splitting money into equal parts with remainder distribution
 - Add Development section to README
-- Add GenerateDocumentationFile and RepositoryType to .csproj
-
-## [0.2.0] - 2026-03-12
-
-### Added
-- `Parse` and `TryParse` methods for creating Money from formatted strings
-- `Convert` method for currency conversion with explicit exchange rates
-- `Divide` method for splitting money into equal parts with remainder distribution
+- Expand README with arithmetic, formatting, allocation, and comparison examples
+- Add GenerateDocumentationFile, RepositoryType, LangVersion, and TreatWarningsAsErrors to csproj
 
 ## 0.1.1 (2026-03-10)
 

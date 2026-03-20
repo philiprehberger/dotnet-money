@@ -5,6 +5,7 @@ namespace Philiprehberger.Money;
 /// </summary>
 public readonly record struct Currency(string Code, string Symbol, int DecimalPlaces)
 {
+    /// <summary>Returns the ISO 4217 currency code.</summary>
     public override string ToString() => Code;
 }
 
@@ -13,15 +14,25 @@ public readonly record struct Currency(string Code, string Symbol, int DecimalPl
 /// </summary>
 public static class Currencies
 {
+    /// <summary>United States Dollar (USD).</summary>
     public static Currency USD { get; } = new("USD", "$", 2);
+    /// <summary>Euro (EUR).</summary>
     public static Currency EUR { get; } = new("EUR", "€", 2);
+    /// <summary>British Pound Sterling (GBP).</summary>
     public static Currency GBP { get; } = new("GBP", "£", 2);
+    /// <summary>Japanese Yen (JPY).</summary>
     public static Currency JPY { get; } = new("JPY", "¥", 0);
+    /// <summary>Swiss Franc (CHF).</summary>
     public static Currency CHF { get; } = new("CHF", "CHF", 2);
+    /// <summary>Canadian Dollar (CAD).</summary>
     public static Currency CAD { get; } = new("CAD", "$", 2);
+    /// <summary>Australian Dollar (AUD).</summary>
     public static Currency AUD { get; } = new("AUD", "$", 2);
+    /// <summary>Swedish Krona (SEK).</summary>
     public static Currency SEK { get; } = new("SEK", "kr", 2);
+    /// <summary>Norwegian Krone (NOK).</summary>
     public static Currency NOK { get; } = new("NOK", "kr", 2);
+    /// <summary>Danish Krone (DKK).</summary>
     public static Currency DKK { get; } = new("DKK", "kr", 2);
 
     /// <summary>All pre-defined currencies for lookup.</summary>
@@ -249,6 +260,7 @@ public readonly record struct Money : IComparable<Money>
         return AmountInMinorUnits.CompareTo(other.AmountInMinorUnits);
     }
 
+    /// <summary>Returns the formatted string representation (e.g. <c>$12.99</c>).</summary>
     public override string ToString() => Format();
 
     private void EnsureSameCurrency(Money other)
@@ -258,11 +270,18 @@ public readonly record struct Money : IComparable<Money>
                 $"Cannot operate on different currencies: {Currency.Code} and {other.Currency.Code}");
     }
 
+    /// <summary>Adds two money values.</summary>
     public static Money operator +(Money a, Money b) => a.Add(b);
+    /// <summary>Subtracts one money value from another.</summary>
     public static Money operator -(Money a, Money b) => a.Subtract(b);
+    /// <summary>Multiplies a money value by a scalar factor.</summary>
     public static Money operator *(Money a, decimal b) => a.Multiply(b);
+    /// <summary>Returns true if <paramref name="a"/> is greater than <paramref name="b"/>.</summary>
     public static bool operator >(Money a, Money b) => a.CompareTo(b) > 0;
+    /// <summary>Returns true if <paramref name="a"/> is less than <paramref name="b"/>.</summary>
     public static bool operator <(Money a, Money b) => a.CompareTo(b) < 0;
+    /// <summary>Returns true if <paramref name="a"/> is greater than or equal to <paramref name="b"/>.</summary>
     public static bool operator >=(Money a, Money b) => a.CompareTo(b) >= 0;
+    /// <summary>Returns true if <paramref name="a"/> is less than or equal to <paramref name="b"/>.</summary>
     public static bool operator <=(Money a, Money b) => a.CompareTo(b) <= 0;
 }

@@ -56,6 +56,48 @@ var usd = Money.Of(100m, Currencies.USD);
 var eur = usd.Convert(Currencies.EUR, 0.92m); // €92.00
 ```
 
+### Arithmetic
+
+```csharp
+using Philiprehberger.Money;
+
+var price = Money.Of(29.99m, Currencies.USD);
+var tax = price.Multiply(0.08m);
+var total = price.Add(tax);
+var refund = total.Negate();
+```
+
+### Formatting
+
+```csharp
+using Philiprehberger.Money;
+
+var amount = Money.Of(1234.56m, Currencies.EUR);
+Console.WriteLine(amount.Format());    // "€1,234.56"
+Console.WriteLine(amount.ToDecimal()); // 1234.56
+```
+
+### Allocation
+
+```csharp
+using Philiprehberger.Money;
+
+var total = Money.Of(100m, Currencies.USD);
+var shares = total.Allocate(50, 30, 20); // [$50.00, $30.00, $20.00]
+var thirds = total.Divide(3);            // [$33.34, $33.33, $33.33]
+```
+
+### Comparison
+
+```csharp
+using Philiprehberger.Money;
+
+var a = Money.Of(10m, Currencies.USD);
+var b = Money.Of(20m, Currencies.USD);
+Console.WriteLine(a.CompareTo(b)); // -1
+Console.WriteLine(a == b);         // false
+```
+
 ## API
 
 ### `Money`

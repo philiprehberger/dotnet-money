@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.5
+
+- Expand README with arithmetic, formatting, allocation, and comparison examples
+- Add LangVersion and TreatWarningsAsErrors to csproj
+
 ## 0.2.3
 
 - Add Development section to README

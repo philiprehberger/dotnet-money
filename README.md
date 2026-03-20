@@ -6,7 +6,7 @@
 
 An immutable `Money` value type for .NET that stores amounts as integer minor units (cents, pence, etc.) to eliminate floating-point rounding errors. Includes ISO 4217 currency definitions and proportional allocation.
 
-## Install
+## Installation
 
 ```bash
 dotnet add package Philiprehberger.Money

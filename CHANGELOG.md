@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.6 (2026-03-20)
+
+- Align README and csproj descriptions
+
 ## 0.1.5 (2026-03-20)
 
 - Add `Parse` and `TryParse` methods for creating Money from formatted strings

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.4 (2026-03-21)
+
+- Fix version numbering to supersede previously published 0.2.3
+
 ## 0.1.6 (2026-03-20)
 
 - Align README and csproj descriptions

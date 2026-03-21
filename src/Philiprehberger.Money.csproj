@@ -7,7 +7,7 @@
     <LangVersion>latest</LangVersion>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <PackageId>Philiprehberger.Money</PackageId>
-    <Version>0.1.6</Version>
+    <Version>0.2.4</Version>
     <Authors>Philip Rehberger</Authors>
     <Description>Immutable Money value type with integer arithmetic, ISO 4217 currencies, and proportional allocation.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

@@ -3,6 +3,7 @@
 [![CI](https://github.com/philiprehberger/dotnet-money/actions/workflows/ci.yml/badge.svg)](https://github.com/philiprehberger/dotnet-money/actions/workflows/ci.yml)
 [![NuGet](https://img.shields.io/nuget/v/Philiprehberger.Money.svg)](https://www.nuget.org/packages/Philiprehberger.Money)
 [![License](https://img.shields.io/github/license/philiprehberger/dotnet-money)](LICENSE)
+[![Sponsor](https://img.shields.io/badge/sponsor-GitHub%20Sponsors-ec6cb9)](https://github.com/sponsors/philiprehberger)
 
 Immutable Money value type with integer arithmetic, ISO 4217 currencies, and proportional allocation.
 
@@ -134,4 +135,4 @@ dotnet build src/Philiprehberger.Money.csproj --configuration Release
 
 ## License
 
-MIT
+[MIT](LICENSE)

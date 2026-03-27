@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.5 (2026-03-26)
+
+- Add Sponsor badge to README
+- Fix License section format
+
 ## 0.2.4 (2026-03-21)
 
 - Fix version numbering to supersede previously published 0.2.3

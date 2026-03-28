@@ -10,6 +10,24 @@ public readonly record struct Currency(string Code, string Symbol, int DecimalPl
 }
 
 /// <summary>
+/// Specifies how midpoint values are rounded during monetary calculations.
+/// </summary>
+public enum RoundingMode
+{
+    /// <summary>Rounds midpoint values away from zero (standard rounding). This is the default.</summary>
+    MidpointAwayFromZero,
+
+    /// <summary>Rounds midpoint values to the nearest even number (banker's rounding).</summary>
+    BankersRounding,
+
+    /// <summary>Rounds towards zero, truncating any fractional digits.</summary>
+    TowardsZero,
+
+    /// <summary>Rounds away from zero (ceiling for positives, floor for negatives).</summary>
+    AwayFromZero
+}
+
+/// <summary>
 /// Well-known ISO 4217 currency constants.
 /// </summary>
 public static class Currencies
@@ -17,11 +35,11 @@ public static class Currencies
     /// <summary>United States Dollar (USD).</summary>
     public static Currency USD { get; } = new("USD", "$", 2);
     /// <summary>Euro (EUR).</summary>
-    public static Currency EUR { get; } = new("EUR", "€", 2);
+    public static Currency EUR { get; } = new("EUR", "\u20ac", 2);
     /// <summary>British Pound Sterling (GBP).</summary>
-    public static Currency GBP { get; } = new("GBP", "£", 2);
+    public static Currency GBP { get; } = new("GBP", "\u00a3", 2);
     /// <summary>Japanese Yen (JPY).</summary>
-    public static Currency JPY { get; } = new("JPY", "¥", 0);
+    public static Currency JPY { get; } = new("JPY", "\u00a5", 0);
     /// <summary>Swiss Franc (CHF).</summary>
     public static Currency CHF { get; } = new("CHF", "CHF", 2);
     /// <summary>Canadian Dollar (CAD).</summary>
@@ -35,10 +53,106 @@ public static class Currencies
     /// <summary>Danish Krone (DKK).</summary>
     public static Currency DKK { get; } = new("DKK", "kr", 2);
 
+    // G20 and common world currencies
+
+    /// <summary>Brazilian Real (BRL).</summary>
+    public static Currency BRL { get; } = new("BRL", "R$", 2);
+    /// <summary>Chinese Yuan (CNY).</summary>
+    public static Currency CNY { get; } = new("CNY", "\u00a5", 2);
+    /// <summary>Indian Rupee (INR).</summary>
+    public static Currency INR { get; } = new("INR", "\u20b9", 2);
+    /// <summary>Mexican Peso (MXN).</summary>
+    public static Currency MXN { get; } = new("MXN", "$", 2);
+    /// <summary>South African Rand (ZAR).</summary>
+    public static Currency ZAR { get; } = new("ZAR", "R", 2);
+    /// <summary>South Korean Won (KRW).</summary>
+    public static Currency KRW { get; } = new("KRW", "\u20a9", 0);
+    /// <summary>Singapore Dollar (SGD).</summary>
+    public static Currency SGD { get; } = new("SGD", "$", 2);
+    /// <summary>Hong Kong Dollar (HKD).</summary>
+    public static Currency HKD { get; } = new("HKD", "$", 2);
+    /// <summary>New Taiwan Dollar (TWD).</summary>
+    public static Currency TWD { get; } = new("TWD", "NT$", 2);
+    /// <summary>Thai Baht (THB).</summary>
+    public static Currency THB { get; } = new("THB", "\u0e3f", 2);
+    /// <summary>Malaysian Ringgit (MYR).</summary>
+    public static Currency MYR { get; } = new("MYR", "RM", 2);
+    /// <summary>Philippine Peso (PHP).</summary>
+    public static Currency PHP { get; } = new("PHP", "\u20b1", 2);
+    /// <summary>Indonesian Rupiah (IDR).</summary>
+    public static Currency IDR { get; } = new("IDR", "Rp", 2);
+    /// <summary>Vietnamese Dong (VND).</summary>
+    public static Currency VND { get; } = new("VND", "\u20ab", 0);
+    /// <summary>Polish Zloty (PLN).</summary>
+    public static Currency PLN { get; } = new("PLN", "z\u0142", 2);
+    /// <summary>Czech Koruna (CZK).</summary>
+    public static Currency CZK { get; } = new("CZK", "K\u010d", 2);
+    /// <summary>Hungarian Forint (HUF).</summary>
+    public static Currency HUF { get; } = new("HUF", "Ft", 2);
+    /// <summary>Turkish Lira (TRY).</summary>
+    public static Currency TRY { get; } = new("TRY", "\u20ba", 2);
+    /// <summary>Russian Ruble (RUB).</summary>
+    public static Currency RUB { get; } = new("RUB", "\u20bd", 2);
+    /// <summary>Israeli New Shekel (ILS).</summary>
+    public static Currency ILS { get; } = new("ILS", "\u20aa", 2);
+    /// <summary>United Arab Emirates Dirham (AED).</summary>
+    public static Currency AED { get; } = new("AED", "AED", 2);
+    /// <summary>Saudi Riyal (SAR).</summary>
+    public static Currency SAR { get; } = new("SAR", "SAR", 2);
+    /// <summary>New Zealand Dollar (NZD).</summary>
+    public static Currency NZD { get; } = new("NZD", "$", 2);
+    /// <summary>Argentine Peso (ARS).</summary>
+    public static Currency ARS { get; } = new("ARS", "$", 2);
+    /// <summary>Chilean Peso (CLP).</summary>
+    public static Currency CLP { get; } = new("CLP", "$", 0);
+    /// <summary>Colombian Peso (COP).</summary>
+    public static Currency COP { get; } = new("COP", "$", 2);
+    /// <summary>Peruvian Sol (PEN).</summary>
+    public static Currency PEN { get; } = new("PEN", "S/", 2);
+    /// <summary>Egyptian Pound (EGP).</summary>
+    public static Currency EGP { get; } = new("EGP", "E\u00a3", 2);
+    /// <summary>Nigerian Naira (NGN).</summary>
+    public static Currency NGN { get; } = new("NGN", "\u20a6", 2);
+    /// <summary>Kenyan Shilling (KES).</summary>
+    public static Currency KES { get; } = new("KES", "KSh", 2);
+    /// <summary>Ghanaian Cedi (GHS).</summary>
+    public static Currency GHS { get; } = new("GHS", "GH\u20b5", 2);
+    /// <summary>Ukrainian Hryvnia (UAH).</summary>
+    public static Currency UAH { get; } = new("UAH", "\u20b4", 2);
+    /// <summary>Romanian Leu (RON).</summary>
+    public static Currency RON { get; } = new("RON", "lei", 2);
+    /// <summary>Bulgarian Lev (BGN).</summary>
+    public static Currency BGN { get; } = new("BGN", "лв", 2);
+    /// <summary>Croatian Kuna (HRK).</summary>
+    public static Currency HRK { get; } = new("HRK", "kn", 2);
+    /// <summary>Icelandic Krona (ISK).</summary>
+    public static Currency ISK { get; } = new("ISK", "kr", 0);
+    /// <summary>Serbian Dinar (RSD).</summary>
+    public static Currency RSD { get; } = new("RSD", "din", 2);
+    /// <summary>Kuwaiti Dinar (KWD).</summary>
+    public static Currency KWD { get; } = new("KWD", "KWD", 3);
+    /// <summary>Bahraini Dinar (BHD).</summary>
+    public static Currency BHD { get; } = new("BHD", "BHD", 3);
+    /// <summary>Omani Rial (OMR).</summary>
+    public static Currency OMR { get; } = new("OMR", "OMR", 3);
+    /// <summary>Qatari Riyal (QAR).</summary>
+    public static Currency QAR { get; } = new("QAR", "QAR", 2);
+    /// <summary>Bangladeshi Taka (BDT).</summary>
+    public static Currency BDT { get; } = new("BDT", "\u09f3", 2);
+    /// <summary>Pakistani Rupee (PKR).</summary>
+    public static Currency PKR { get; } = new("PKR", "Rs", 2);
+    /// <summary>Sri Lankan Rupee (LKR).</summary>
+    public static Currency LKR { get; } = new("LKR", "Rs", 2);
+
     /// <summary>All pre-defined currencies for lookup.</summary>
-    internal static readonly Currency[] All =
+    public static readonly Currency[] All =
     [
-        USD, EUR, GBP, JPY, CHF, CAD, AUD, SEK, NOK, DKK
+        USD, EUR, GBP, JPY, CHF, CAD, AUD, SEK, NOK, DKK,
+        BRL, CNY, INR, MXN, ZAR, KRW, SGD, HKD, TWD, THB,
+        MYR, PHP, IDR, VND, PLN, CZK, HUF, TRY, RUB, ILS,
+        AED, SAR, NZD, ARS, CLP, COP, PEN, EGP, NGN, KES,
+        GHS, UAH, RON, BGN, HRK, ISK, RSD, KWD, BHD, OMR,
+        QAR, BDT, PKR, LKR
     ];
 }
 
@@ -97,6 +211,58 @@ public readonly record struct Money : IComparable<Money>
 
     /// <summary>Returns the absolute value.</summary>
     public Money Abs() => new(Math.Abs(AmountInMinorUnits), Currency);
+
+    /// <summary>
+    /// Returns a new <see cref="Money"/> representing the given percentage of this amount.
+    /// For example, <c>Money.Of(100m, Currencies.USD).Percentage(8.5m)</c> returns <c>$8.50</c>.
+    /// </summary>
+    /// <param name="percent">The percentage value (e.g. 8.5 for 8.5%).</param>
+    public Money Percentage(decimal percent)
+    {
+        var result = (long)Math.Round(AmountInMinorUnits * percent / 100m, MidpointRounding.ToEven);
+        return new Money(result, Currency);
+    }
+
+    /// <summary>
+    /// Returns a new <see cref="Money"/> with the given percentage added to the original amount.
+    /// Useful for tax-inclusive calculations. For example,
+    /// <c>Money.Of(100m, Currencies.USD).AddPercentage(8.5m)</c> returns <c>$108.50</c>.
+    /// </summary>
+    /// <param name="percent">The percentage to add (e.g. 8.5 for 8.5%).</param>
+    public Money AddPercentage(decimal percent)
+    {
+        var additional = (long)Math.Round(AmountInMinorUnits * percent / 100m, MidpointRounding.ToEven);
+        return new Money(AmountInMinorUnits + additional, Currency);
+    }
+
+    /// <summary>
+    /// Rounds the amount to the specified number of decimal places using the default
+    /// rounding mode (<see cref="RoundingMode.MidpointAwayFromZero"/>).
+    /// </summary>
+    /// <param name="decimalPlaces">The number of decimal places to round to.</param>
+    public Money Round(int decimalPlaces)
+    {
+        return Round(decimalPlaces, RoundingMode.MidpointAwayFromZero);
+    }
+
+    /// <summary>
+    /// Rounds the amount to the specified number of decimal places using the given rounding mode.
+    /// </summary>
+    /// <param name="decimalPlaces">The number of decimal places to round to.</param>
+    /// <param name="mode">The rounding strategy to apply.</param>
+    public Money Round(int decimalPlaces, RoundingMode mode)
+    {
+        if (decimalPlaces < 0)
+            throw new ArgumentException("Decimal places must be non-negative.", nameof(decimalPlaces));
+
+        if (decimalPlaces >= Currency.DecimalPlaces)
+            return this;
+
+        var decimalAmount = ToDecimal();
+        var midpoint = ToMidpointRounding(mode);
+        var rounded = Math.Round(decimalAmount, decimalPlaces, midpoint);
+        return Of(rounded, Currency);
+    }
 
     /// <summary>
     /// Distributes this amount across <paramref name="ratios"/> proportionally,
@@ -269,6 +435,15 @@ public readonly record struct Money : IComparable<Money>
             throw new InvalidOperationException(
                 $"Cannot operate on different currencies: {Currency.Code} and {other.Currency.Code}");
     }
+
+    private static MidpointRounding ToMidpointRounding(RoundingMode mode) => mode switch
+    {
+        RoundingMode.MidpointAwayFromZero => MidpointRounding.AwayFromZero,
+        RoundingMode.BankersRounding => MidpointRounding.ToEven,
+        RoundingMode.TowardsZero => MidpointRounding.ToZero,
+        RoundingMode.AwayFromZero => MidpointRounding.AwayFromZero,
+        _ => MidpointRounding.AwayFromZero
+    };
 
     /// <summary>Adds two money values.</summary>
     public static Money operator +(Money a, Money b) => a.Add(b);

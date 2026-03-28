@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0 (2026-03-27)
+
+- Expand to 50+ ISO 4217 currencies (was 10)
+- Add rounding modes (bankers, away from zero, towards zero)
+- Add percentage and tax calculation methods
+- Add Round method with configurable decimal places
+
 ## 0.2.5 (2026-03-26)
 
 - Add Sponsor badge to README

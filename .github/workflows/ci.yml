@@ -17,6 +17,7 @@ jobs:
           dotnet-version: '8.0.x'
       - run: dotnet restore src/Philiprehberger.Money.csproj
       - run: dotnet build src/Philiprehberger.Money.csproj --configuration Release --no-restore
+      - run: dotnet test tests/Philiprehberger.Money.Tests/Philiprehberger.Money.Tests.csproj --configuration Release --no-restore
 
   publish:
     needs: build
